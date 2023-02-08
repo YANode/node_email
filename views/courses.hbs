@@ -1,0 +1,43 @@
+<h1>Courses</h1>
+{{!-- {{ check if there are any courses}} --}}
+
+{{#if courses.length}}
+    {{#each courses}}  {{!-- {{ iteration of the "courses" array}} --}}
+    {{!-- {{ template to display on the screen: materializecss.com -> components -> cards}} --}}
+        <div class="row">
+            <div class="col s6 offset-s3">
+                <div class="card">
+                    <div class="card-image">
+                        <img src="{{img}}" alt="{{title}}">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-title">{{title}}</span>
+                        <p class="price">{{price}}</p>
+                    </div>
+                    <div class="card-action actions">
+                        <a href="/courses/{{id}}" target="blank">Open the course</a>
+
+                        {{!-- {{if the user is logged in - show button 'Edit', 'Buy'}} --}}
+                        {{#if @root.isAuth}} {{!-- {{ '@root.' - exit '#each' and move to root directory}} --}}
+                        {{!-- {{req.query.allow contains the URL query parameters - after the ? }} --}}
+                            <a href="/courses/{{id}}/edit?allow=true">Edit</a>
+                            {{!-- {{a button to delete the course }} --}}
+                            <form action="/card/add" method="POST">
+
+                                {{!-- {{middleware/variables.js -> "csrf" variable - add to post request: checks for 'token }} --}}
+                                <input type="hidden" name="_csrf" value="{{@root.csrf}}">
+
+                                <input type="hidden" name="id" value="{{id}}">
+                                <button type="submit" class="btn btn-primary">Buy</button>
+                            </form>
+                        {{/if}}
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    {{/each}}
+{{else}}
+    <p>No courses</p>
+{{/if}}

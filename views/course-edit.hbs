@@ -1,0 +1,41 @@
+<h1>Edit {{course.title}}</h1>
+
+<form action="/courses/edit" method="POST" class="course-form">
+    <div class="input-field">
+        <input id="title" name="title" type="text" class="validate" required value="{{course.title}}">
+        <label for="title">Сourse title</label>
+        <span class="helper-text" data-error="enter course title"></span>
+
+    </div>
+
+    <div class="input-field">
+        <input id="price" name="price" type="number" class="validate" required min="1" value="{{course.price}}">
+        <label for="title">Сourse price</label>
+        <span class="helper-text" data-error="enter the price"></span>
+    </div>
+
+    <div class="input-field">
+        <input id="img" name="img" type="text" class="validate" required value="{{course.img}}">
+        <label for="title">Image url</label>
+        <span class="helper-text" data-error="enter the URL of the image"></span>
+    </div>
+
+    {{!-- {{middleware/variables.js -> "csrf" variable - add to post request: checks for 'token }} --}}
+    <input type="hidden" name="_csrf" value="{{csrf}}">
+
+    {{!-- {{Transfer data from the form -> id after editing }} --}}
+    <input type="hidden" name="id" value="{{course.id}}">
+
+    <button type="submit" class="btn btn-primary">Edit course</button>
+
+</form>
+
+<form action="/courses/remove" method="POST">
+
+    {{!-- {{middleware/variables.js -> "csrf" variable - add to post request: checks for 'token }} --}}
+    <input type="hidden" name="_csrf" value="{{csrf}}">
+
+    {{!-- {{pass the 'id' of the course to be deleted}} --}}
+    <input type="hidden" name="id" value="{{course.id}}">
+    <button type="submit" class="btn red">Delete course</button>
+</form>

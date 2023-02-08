@@ -1,0 +1,48 @@
+<h1>Cart</h1>
+
+{{!-- {{the root parent 'div' on which the event handler is added}} --}}
+<div id="card">
+    {{!-- {{ check: if there are any courses in the cart}} --}}
+    {{#if courses.length}}
+    {{!-- {{display content}} --}}
+        <table>
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Quantity</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#each courses}} {{!-- {{iterate the "courses" array}} --}}
+                <tr>
+                    <td>{{title}}</td>
+                    <td>{{count}}</td>
+                    <td>
+                        {{!--'js-remove, data-id = {{id}': for the event handler}} --}}
+                        <button class="btn btn-small js-remove"
+                                data-id="{{id}}"{{!--set the 'id' attribute}} --}}
+                                data-csrf="{{@root.csrf}}">{{!--set the 'csrf' attribute}} --}}
+                                Delete
+                        </button>
+                    </td>
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+
+        <p><strong>Price:</strong><span class="price">{{price}}</span></p>
+
+        <form action="/orders" method="POST">
+
+            {{!-- {{middleware/variables.js -> "csrf" variable - add to post request: checks for 'token }} --}}
+            <input type="hidden" name="_csrf" value="{{csrf}}">
+
+            <button type="submit" class="btn">Order</button>
+        </form>
+
+    {{else}}
+        <p>Сart is empty</p>
+
+    {{/if}}
+</div>
