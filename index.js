@@ -17,7 +17,7 @@ const authRoutes = require('./routs/auth');
 const User = require('./models/user');
 const varMiddleware = require('./middleware/variables');//connect our middleware from the 'widdleware/variables.js' file
 const userMiddleware = require('./middleware/user');//connect our middleware from the 'widdleware/user.js'
-
+const keys = require('./keys/index');
 
 //from version 4.6.0 on,  Handlebars used:
 // terminal: npm install @handlebars/allow-prototype-access
@@ -30,13 +30,12 @@ const hbs = exphbs.create({
     extname: 'hbs',
     handlebars: allowInsecurePrototypeAccess(Handlebars) //from version 4.6.0 on,  Handlebars used
 })
-const MONGODB_URI = `mongodb+srv://anode:bOKT2JLZavt6zpY3@cluster0.o5pllfj.mongodb.net/shop`;/*cloud.mongodb.com ->Database Deployments->
-                                                                                            connect-> connect your application*/
+
 
 //create a new instance of the class MongoStore
 const store = new MongoStore({
     collection: 'sessions',// the place where the sessions are stored
-    uri: MONGODB_URI// url database
+    uri: keys.MONGODB_URI// url database
 })
 
 // View engine
@@ -55,7 +54,7 @@ app.use(express.urlencoded({extended: true}));
 
 //set up middleware 'express-sessions', to access the req.session object and store data within the session
 app.use(session({
-    secret:'some secret value',//session encryption key
+    secret: keys.SESSION_SECRET,//session encryption key
     resave: false, //you need to re-save the session to the repository
     saveUninitialized: false, //if 'true', empty sessions will go into the repository
     store:store
@@ -72,7 +71,7 @@ app.use(varMiddleware);
 app.use(userMiddleware);
 
 
-//router registration
+//load the middleware developer function
 app.use('/', mainRoutes);
 app.use('/add', addRoutes);
 app.use('/courses', coursesRoutes);
@@ -85,7 +84,7 @@ app.use('/auth', authRoutes);
 async function start() {
     try {
         mongoose.set('strictQuery', true);
-        await mongoose.connect(MONGODB_URI, {
+        await mongoose.connect(keys.MONGODB_URI, {
             useNewUrlParser: true,
             // useFindAndModify: false
         });
