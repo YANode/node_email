@@ -1,10 +1,21 @@
 //get the router object from the library
 const {Router} = require('express');//const express = require('express');
-//get the router object from the library
 const router = Router();//const router = express.Router();
-const bcrypt = require('bcryptjs');//provides encryption
-const User = require('../models/user');
 
+//get the router object from the library
+const bcrypt = require('bcryptjs');//provides encryption
+const nodemailer = require('nodemailer');
+const sendgrid = require('nodemailer-sendgrid-transport');
+
+const User = require('../models/user');
+const keys = require('../keys');
+const regEmail = require('../email/registration');
+
+
+//created a transporter object that will send email (using the email network protocol (smtp))
+const transporter = nodemailer.createTransport(sendgrid ({
+    auth:{api_key: keys.SENDGRID_API_KEY}
+}));
 
 // content of the login page download by link
 router.get('/login', async (req, res) => {
@@ -79,6 +90,8 @@ router.post('/register', async (req, res) => {
                 cart: {items: []}
             });
             await user.save();
+
+            await transporter.sendMail(regEmail(email));
             res.redirect('/auth/login#login');
         }
     } catch (e) {
